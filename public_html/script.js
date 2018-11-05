@@ -70,3 +70,32 @@ function pintar(){
     }
 }
 
+function dadesInicialsJugador(jugador){
+    var x, y, dir1, dir2;
+    
+    do{
+        x = Math.floor((Math.random() * 29) + 0);
+        y = Math.floor((Math.random() * 42) + 0);
+    } while (!comprobarPosicio(y, x))
+        
+    dir1 = Math.floor((Math.random() * 4) + 1);      
+          
+    
+}
+
+function comprobarPosicio(Y, X){
+    var ok = false;
+    if (tauler[Y][X] == 1){
+        ok = true;
+    }
+    return ok;
+}
+
+function novaDireccio(Y, X){
+    
+    do{
+        x = Math.floor((Math.random() * 29) + 0);
+        y = Math.floor((Math.random() * 42) + 0);
+    } while (!comprobarPosicio(y, x))
+    Math.floor((Math.random() * 4) + 1); 
+}
