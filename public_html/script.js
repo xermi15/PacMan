@@ -102,6 +102,7 @@ function pintar() {
 //DONE
 //- assigna dades inicials a l'element jugador
 //NOT DONE
+//- Que no estigui en la mateixa posicio que un fantasma, ni a prop!
 //- Direccio inicial a la que vol anar?
 function dadesInicialsJugador(jugador) {
     var x, y, dir1, dir2;
