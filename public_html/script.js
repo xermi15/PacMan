@@ -82,21 +82,24 @@ function start(){
 //- Colocar-ho en una taula HTML (Punt 5)
 //- Mostrar parets en comptes de lletres (Punt 5)
 function pintar() {
+    var laberint = "";
     for (var i = 0; i < 43; i++) {
         for (var j = 0; j < 29; j++) {
             if (tauler[i][j] == 1) {
-                document.write("&nbsp;");
+                laberint += "&nbsp;";
             }
             else if(tauler[i][j] == 2) {
-                document.write("C");
+                laberint += "C";
             }
             else if(tauler[i][j] == 3) {
-                document.write("M");
+                laberint += "M";
             }
-            else document.write("X");
+            else laberint += "X";
         }
-        document.write("<br>");
+        laberint += "<br>";
     }
+
+    document.getElementById("tauler").innerHTML = laberint;
 }
 
 //DONE

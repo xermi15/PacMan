@@ -3,3 +3,7 @@ body {
     line-height: 50%;
     font-weight: bolder;
 }
+.error {
+  color: red;
+  font-size: 24px;
+}
