@@ -1,9 +1,18 @@
 body {
     font-family: 'VT323', monospace;
-    line-height: 50%;
+    line-height: 60%;
     font-weight: bolder;
+    background-color: black;
+    color: white;
+    letter-spacing: 1px;
 }
-.error {
+#tauler{
+    color: #0022ff;
+}
+.jugador {
+  color: yellow;
+}
+
+.fantasma {
   color: red;
-  font-size: 24px;
 }

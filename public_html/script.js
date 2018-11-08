@@ -89,10 +89,10 @@ function pintar() {
                 laberint += "&nbsp;";
             }
             else if(tauler[i][j] == 2) {
-                laberint += "C";
+                laberint += "<span class='jugador'>C</span>";
             }
             else if(tauler[i][j] == 3) {
-                laberint += "M";
+                laberint += "<span class='fantasma'>M</span>";
             }
             else laberint += "X";
         }
