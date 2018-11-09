@@ -270,10 +270,10 @@ function novaDireccioFantasma(fantasma) {
 
 function contrari(fantasma){
     var contrari;
-    if(fantasma[3] = 1) contrari = 3;
-    if(fantasma[3] = 2) contrari = 4;
-    if(fantasma[3] = 3) contrari = 1;
-    if(fantasma[3] = 4) contrari = 2;
+    if(fantasma[3] == 1) contrari = 3;
+    if(fantasma[3] == 2) contrari = 4;
+    if(fantasma[3] == 3) contrari = 1;
+    if(fantasma[3] == 4) contrari = 2;
     return contrari;
 }
 
