@@ -19,6 +19,7 @@ var iterar;
 var acabat = false;
 var colisio = false;
 var tempsJoc = 0;
+var direccions = new Array();
 
 //variable tauler
 var tauler = new Array();
@@ -83,7 +84,12 @@ function start() {
     pintar();
     //iterar = setInterval(iteracio(), 2000);
     //restart();
-    var fantasm1 = setInterval(moureFantasma(f1), 2000);
+//    var fantasm1 = setInterval(iteracio(), 2000);
+    //setTimeout(moureFantasma(f1), 3000)
+    console.log(direccions);
+    console.log(f1);
+    moureFantasma(f1);
+    
 }
 
 //Funcio encarregada de fer les iteracions
@@ -218,132 +224,104 @@ function direccioInicial(Y, X) {
 //- En cas d'estar a una cruilla tria una direccio que no sigui l'actual a la inversa
 //- En el cas d'una paret, que trii qualsevol
 function novaDireccioFantasma(fantasma) {
-    var direccions = new Array();
     var trobada = false;
     var novaDir;
     var aux;
     var numDir = 0;
 
     comprovarDireccions(fantasma, direccions);
+    console.log(direccions);
 
-    //calculem el numero de direccions possibles
-    for (var i = 0; i < direccions.length; i++) {
-        if (direccions[i] == 1) numDir++;
-    }
-
-    //en el cas de que sigui una cruilla, que no torni enrere
-    if (numDir > 2) {
-        do {
-            aux = Math.floor((Math.random() * 4) + 1);
-            if ((direccions[aux] == 1) && (fantasma[3] != contrari(fantasma))) {
-                trobada = true;
-                novaDir = aux;
-                console.log(novaDir);
-            }
-        } while (!trobada)
-    }
-
-    //dues direccions possibles
-    else {
-        do {
-            aux = Math.floor((Math.random() * 4) + 1);
-            //si ens trobem una paret, qualsevol de les dues direccions es bona
-            if((direccions[aux] == 1) && (paret(fantasma, direccions))){
-                trobada = true;
-                novaDir = aux;
-                console.log(novaDir);
-            }
-            //si estem en un tunel, nomes poden seguir recte
-            if ((direccions[aux] == fantasma[3]) && (!paret(fantasma, direccions))) {
-                trobada = true;
-                novaDir = aux;
-                console.log(novaDir);
-            }
-        } while (!trobada)
-    }
-
-                                                                console.log(fantasma);
-    //assignem la nova direccio al fantasma
-    fantasma[3] = novaDir;
-                                                                console.log(fantasma);
+//    //calculem el numero de direccions possibles
+//    for (var i = 0; i < 4; i++) {
+//        if (direccions[i] === 1) numDir++;
+//    }
+//
+//    //en el cas de que sigui una cruilla, que no torni enrere
+//    if (numDir > 2) {
+//        do {
+//            aux = Math.floor((Math.random() * 4) + 1);
+//            if ((direccions[aux] === 1) && (fantasma[3] !== contrari(fantasma))) {
+//                trobada = true;
+//                novaDir = aux;
+//            }
+//        } while (!trobada)
+//    }
+//
+//    //dues direccions possibles
+//    else {
+//        do {
+//            aux = Math.floor((Math.random() * 4) + 1);
+//            //si ens trobem una paret, qualsevol de les dues direccions es bona
+//            if((direccions[aux] === 1) && (paret(direccions))){
+//                trobada = true;
+//                novaDir = aux;
+//            }
+//            //si estem en un tunel, nomes poden seguir recte
+//            if ((direccions[aux] === fantasma[3]) && (!paret(direccions))) {
+//                trobada = true;
+//                novaDir = aux;
+//            }
+//        } while (!trobada)
+//    }
+//
+//    //assignem la nova direccio al fantasma
+//    fantasma[3] = novaDir;
 }
 
 function contrari(fantasma){
-    var contrari;
-    if(fantasma[3] == 1) contrari = 3;
-    if(fantasma[3] == 2) contrari = 4;
-    if(fantasma[3] == 3) contrari = 1;
-    if(fantasma[3] == 4) contrari = 2;
-    return contrari;
+    var vContrari;
+    if(fantasma[3] == 1) vContrari = 3;
+    if(fantasma[3] == 2) vContrari = 4;
+    if(fantasma[3] == 3) vContrari = 1;
+    if(fantasma[3] == 4) vContrari = 2;
+    return vContrari;
 }
 
-function paret(fantasma, direccions){
+function paret(direccions){
     var vParet = true;
-    if ((direccions[1] == 1 && (direccions[3] == 1))) paret = false;
-    if ((direccions[2] == 1 && (direccions[4] == 1))) paret = false;
+    if ((direccions[1] == 1 && (direccions[3] == 1))) vParet = false;
+    if ((direccions[2] === 1 && (direccions[4] == 1))) vParet = false;
     return vParet;
 }
 
 
 function comprovarDireccions(element, direccions){
-    var cDireccions = new Array();
-
+    var x = element[2];
+    var y = element[1];
     //comprovem si podem anar a cada una de les direccions
-    if (comprobarPosicio(element[2] + 1, element[1]) == 1) cDireccions[1] = 1;
-    else cDireccions[1] = 0;
-    if (comprobarPosicio(element[2], element[1] + 1) == 1) cDireccions[2] = 1;
-    else cDireccions[2] = 0;
-    if (comprobarPosicio(element[2] - 1, element[1]) == 1) cDireccions[3] = 1;
-    else cDireccions[3] = 0;
-    if (comprobarPosicio(element[2], element[1] - 1) == 1) cDireccions[4] = 1;
-    else cDireccions[4] = 0;
-
-    return direccions;
+    if (comprobarPosicio(x + 1, y) == 1) direccions[1] = 1;
+    else direccions[1] = 0;
+    if (comprobarPosicio(x, y + 1) == 1) direccions[2] = 1;
+    else direccions[2] = 0;
+    if (comprobarPosicio(x - 1, y) == 1) direccions[3] = 1;
+    else direccions[3] = 0;
+    if (comprobarPosicio(x, y - 1) == 1) direccions[4] = 1;
+    else direccions[4] = 0;
 }
-
-////Funcion encarregada de comprovar si un fantasma escull la direccio contraria a la que va
-//function enrere(direccio, fantasma) {
-//    var vEnrere = false;
-//    if ((direccio == 1) && (fantasma[3] == 3)) vEnrere = true;
-//    if ((direccio == 2) && (fantasma[3] == 4)) vEnrere = true;
-//    if ((direccio == 3) && (fantasma[3] == 1)) vEnrere = true;
-//    if ((direccio == 4) && (fantasma[3] == 2)) vEnrere = true;
-//    return vEnrere;
-//
-//}
-
-
-//function seguirEndavant(fantasma){
-//    var endavant = false;
-//    if ((comprobarPosicio()) && (fantasma[3] == 1)) endavant = true;
-//    if ((direccio == 2) && (fantasma[3] == 2)) endavant = true;
-//    if ((direccio == 3) && (fantasma[3] == 3)) endavant = true;
-//    if ((direccio == 4) && (fantasma[3] == 4)) endavant = true;
-//    return endavant;
-//}
-
 
 //Funcio encarregada de moure el fantasma
 //- Aconseguir una nova direccio
 //- Pintar el fantasma al tauler
 function moureFantasma(fantasma) {
     novaDireccioFantasma(fantasma);
-    if (fantasma[3] == 1) {
+    
+    if (fantasma[3] === 1) {
         tauler[fantasma[2]][fantasma[1]] = 1;
         fantasma[2] += 1;
         tauler[fantasma[2]][fantasma[1]] = 3;
     }
-    if (fantasma[3] == 2) {
+    if (fantasma[3] === 2) {
         tauler[fantasma[2]][fantasma[1]] = 1;
         fantasma[1] += 1;
         tauler[fantasma[2]][fantasma[1]] = 3;
     }
-    if (fantasma[3] == 3) {
+    if (fantasma[3] === 3) {
         tauler[fantasma[2]][fantasma[1]] = 1;
         fantasma[2] += -1;
         tauler[fantasma[2]][fantasma[1]] = 3;
     }
-    if (fantasma[3] == 4) {
+    if (fantasma[3] === 4) {
         tauler[fantasma[2]][fantasma[1]] = 1;
         fantasma[1] += -1;
         tauler[fantasma[2]][fantasma[1]] = 3;
