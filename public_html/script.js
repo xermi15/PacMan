@@ -70,11 +70,14 @@ tauler = [
 
 ];
 
+//---------------------------------"Main"---------------------------------
+
 //Funcio encarregada de posar en marxa el joc
 //DONE:
 //- Mostra per pantalla tots els elements
-//- TODO: Que el joc comensi
-//- TODO: Bucle de temps perque el joc acabi
+//- Que el joc comensi
+//- Bucle de temps
+//- Que el joc acabi
 //- TODO: Restart?
 function start() {
     dadesInicialsJugador(j1);
@@ -82,14 +85,8 @@ function start() {
     dadesInicialsFantasma(f2);
     dadesInicialsFantasma(f3);
     pintar();
-    //iterar = setInterval(iteracio(), 2000);
+    setInterval(iteracio, 130);
     //restart();
-//    var fantasm1 = setInterval(iteracio(), 2000);
-    //setTimeout(moureFantasma(f1), 3000)
-    console.log(direccions);
-    console.log(f1);
-    moureFantasma(f1);
-    
 }
 
 //Funcio encarregada de fer les iteracions
@@ -98,13 +95,12 @@ function iteracio() {
     //if(acabat) clearInterval(iterar);
     //moureJugador(j1);
     moureFantasma(f1);
-    //moureFantasma(f2);
-    //moureFantasma(f3);
-    //tempsJoc++;
+    moureFantasma(f2);
+    moureFantasma(f3);
+    tempsJoc++;
     //comprovarColisio();
     //comprovarTemps();
     pintar();
-
 }
 
 //Funcio encarregada de pintar el tauler
@@ -130,6 +126,8 @@ function pintar() {
 
     document.getElementById("tauler").innerHTML = laberint;
 }
+
+//---------------------------------Dades Inicials---------------------------------
 
 //Funcio encarregada d'assignar les dades inicials al jugador
 //- assigna dades inicials a l'element jugador
@@ -219,6 +217,8 @@ function direccioInicial(Y, X) {
     return dirIni;
 }
 
+//---------------------------------Moviment Elements---------------------------------
+
 //Funcio encarregada d'assignar una nova direccio a un fantasma
 //- Comprova les direccions a les que pot anar un fantasma
 //- En cas d'estar a una cruilla tria una direccio que no sigui l'actual a la inversa
@@ -230,45 +230,48 @@ function novaDireccioFantasma(fantasma) {
     var numDir = 0;
 
     comprovarDireccions(fantasma, direccions);
-    console.log(direccions);
 
-//    //calculem el numero de direccions possibles
-//    for (var i = 0; i < 4; i++) {
-//        if (direccions[i] === 1) numDir++;
-//    }
-//
-//    //en el cas de que sigui una cruilla, que no torni enrere
-//    if (numDir > 2) {
-//        do {
-//            aux = Math.floor((Math.random() * 4) + 1);
-//            if ((direccions[aux] === 1) && (fantasma[3] !== contrari(fantasma))) {
-//                trobada = true;
-//                novaDir = aux;
-//            }
-//        } while (!trobada)
-//    }
-//
-//    //dues direccions possibles
-//    else {
-//        do {
-//            aux = Math.floor((Math.random() * 4) + 1);
-//            //si ens trobem una paret, qualsevol de les dues direccions es bona
-//            if((direccions[aux] === 1) && (paret(direccions))){
-//                trobada = true;
-//                novaDir = aux;
-//            }
-//            //si estem en un tunel, nomes poden seguir recte
-//            if ((direccions[aux] === fantasma[3]) && (!paret(direccions))) {
-//                trobada = true;
-//                novaDir = aux;
-//            }
-//        } while (!trobada)
-//    }
-//
-//    //assignem la nova direccio al fantasma
-//    fantasma[3] = novaDir;
+    //calculem el numero de direccions possibles
+    for (var i = 1; i < 5; i++) {
+        if (direccions[i] === 1) numDir++;
+    }
+
+    //en el cas de que sigui una cruilla, que no torni enrere
+    if (numDir > 2) {
+        do {
+            aux = Math.floor((Math.random() * 4) + 1);
+            if ((direccions[aux] == 1) && (fantasma[3] != contrari(fantasma))) {
+                trobada = true;
+                novaDir = aux;
+            }
+        } while (!trobada)
+    }
+
+    //dues direccions possibles
+    if(numDir <= 2) {
+        do {
+            aux = Math.floor((Math.random() * 4) + 1);
+            if(direccions[aux] == 1){
+                //si estem en un tunel, nomes poden seguir recte
+                if(tunel(direccions)){
+                    trobada = true;
+                    novaDir = fantasma[3];
+                   }
+                //si ens trobem una paret, qualsevol de les dues direccions es bona
+                else{
+                    trobada = true;
+                    novaDir = aux;
+                }
+            }
+        } while (!trobada)
+    }
+
+    //assignem la nova direccio al fantasma
+    fantasma[3] = novaDir;
 }
 
+//Funcio encarregada de comprovar si un fantasma va enrere
+//- Retorna la direccio contraria a la que va el fantasma
 function contrari(fantasma){
     var vContrari;
     if(fantasma[3] == 1) vContrari = 3;
@@ -278,14 +281,20 @@ function contrari(fantasma){
     return vContrari;
 }
 
-function paret(direccions){
-    var vParet = true;
-    if ((direccions[1] == 1 && (direccions[3] == 1))) vParet = false;
-    if ((direccions[2] === 1 && (direccions[4] == 1))) vParet = false;
-    return vParet;
+//Funcio encarregada de comprovar si un fantasma esta en un tunel
+//- Comprova si a l'array direccions hi ha els dos sentits d'una direccio
+//- Retorna un boolea
+function tunel(direccions){
+    var vTunel = false;
+    if ((direccions[1] == 1) && (direccions[3] == 1)) vTunel = true;
+    if ((direccions[2] == 1) && (direccions[4] == 1)) vTunel = true;
+    return vTunel;
 }
 
-
+//Funcio encarregada de comprovar totes les direccions a les que pot anar un element
+//- Per a cada direccio, comprova si la seguent posicio es valida i, per tant, la direccio
+//  en la que se situa aquella posicio respecte l'element
+//- Retorna l'array direccions completat
 function comprovarDireccions(element, direccions){
     var x = element[2];
     var y = element[1];
@@ -329,13 +338,9 @@ function moureFantasma(fantasma) {
 }
 
 
-//var variable = setInterval(funcio(), tempsEnMilisecs)
-//variable.clearInterval();
+//BUGS: (coses completades)
+//- Hi ha vegades en que es coloca, inicialment, un fantasma o jugador sobre un mur
 
-//set time out
-//cada cert temps executa una accio, o varies
-//Que fara la funcio: donarlis la nova posicio i calcular la nova direccio (nomes cruilla o paret)
-//Extra: probabilitat de la nova direccio
 
 
 //punt4
