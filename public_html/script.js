@@ -16,8 +16,6 @@ var f3 = new Array();
 
 //variables de suport a les iteracions
 var iterar;
-var acabat = false;
-var colisio = false;
 var tempsJoc = 0;
 var direccions = new Array();
 
@@ -78,37 +76,34 @@ tauler = [
 //- Que el joc comensi
 //- Bucle de temps
 //- Que el joc acabi
-//- TODO: Restart?
+//TODO: Restart?
 function start() {
     dadesInicialsJugador(j1);
     dadesInicialsFantasma(f1);
     dadesInicialsFantasma(f2);
     dadesInicialsFantasma(f3);
     pintar();
-    setInterval(iteracio, 130);
+    iterar = setInterval(iteracio, 130);
     //restart();
 }
 
 //Funcio encarregada de fer les iteracions
-
 function iteracio() {
-    //if(acabat) clearInterval(iterar);
     //moureJugador(j1);
     moureFantasma(f1);
     moureFantasma(f2);
     moureFantasma(f3);
     tempsJoc++;
-    //comprovarColisio();
-    //comprovarTemps();
+    comprovarColisio(j1, f1);
+    comprovarColisio(j1, f2);
+    comprovarColisio(j1, f3);
+    comprovarTemps(tempsJoc);
     pintar();
 }
 
 //Funcio encarregada de pintar el tauler
-//DONE:
-//mostra tota la info de TAULER per pantalla
-//NOT DONE (EXTRA):
-//- Colocar-ho en una taula HTML (Punt 5)
-//- Mostrar parets en comptes de lletres (Punt 5)
+//- Mostra tota la info de TAULER per pantalla
+//TODO: Mostrar parets en comptes de lletres (Punt 5)
 function pintar() {
     var laberint = "";
     for (var i = 0; i < 43; i++) {
@@ -125,15 +120,17 @@ function pintar() {
     }
 
     document.getElementById("tauler").innerHTML = laberint;
+    document.getElementById("puntuacio").innerHTML = (Math.floor(tempsJoc));
 }
+
 
 //---------------------------------Dades Inicials---------------------------------
 
 //Funcio encarregada d'assignar les dades inicials al jugador
-//- assigna dades inicials a l'element jugador
-//- TODO: Que no estigui en la mateixa posicio que un fantasma, ni a prop!
-//- TODO: Direccio inicial a la que vol anar?
-//- TODO: que despres de moures el tauler marqui una altre cop buit(1)
+//- Assigna dades inicials a l'element jugador
+// TODO: Que no estigui en la mateixa posicio que un fantasma, ni a prop!
+// TODO: Direccio inicial a la que vol anar?
+//- Que despres de moures el tauler marqui una altre cop buit(1)
 function dadesInicialsJugador(jugador) {
     var x, y;
 
@@ -156,8 +153,7 @@ function dadesInicialsJugador(jugador) {
 
 //Funcio encarregada d'assignar les dades inicials al jugador
 //- assigna dades inicials a l'element fantasma
-//-TODO: separats
-//-TODO: que despres de moures el tauler marqui una altre cop buit(1)
+// TODO: separats
 function dadesInicialsFantasma(fantasma) {
     var x, y;
     var separats = false;
@@ -217,6 +213,8 @@ function direccioInicial(Y, X) {
     return dirIni;
 }
 
+
+
 //---------------------------------Moviment Elements---------------------------------
 
 //Funcio encarregada d'assignar una nova direccio a un fantasma
@@ -248,17 +246,17 @@ function novaDireccioFantasma(fantasma) {
     }
 
     //dues direccions possibles
-    if(numDir <= 2) {
+    if (numDir <= 2) {
         do {
             aux = Math.floor((Math.random() * 4) + 1);
-            if(direccions[aux] == 1){
+            if (direccions[aux] == 1) {
                 //si estem en un tunel, nomes poden seguir recte
-                if(tunel(direccions)){
+                if (tunel(direccions)) {
                     trobada = true;
                     novaDir = fantasma[3];
-                   }
+                }
                 //si ens trobem una paret, qualsevol de les dues direccions es bona
-                else{
+                else {
                     trobada = true;
                     novaDir = aux;
                 }
@@ -272,19 +270,19 @@ function novaDireccioFantasma(fantasma) {
 
 //Funcio encarregada de comprovar si un fantasma va enrere
 //- Retorna la direccio contraria a la que va el fantasma
-function contrari(fantasma){
+function contrari(fantasma) {
     var vContrari;
-    if(fantasma[3] == 1) vContrari = 3;
-    if(fantasma[3] == 2) vContrari = 4;
-    if(fantasma[3] == 3) vContrari = 1;
-    if(fantasma[3] == 4) vContrari = 2;
+    if (fantasma[3] == 1) vContrari = 3;
+    if (fantasma[3] == 2) vContrari = 4;
+    if (fantasma[3] == 3) vContrari = 1;
+    if (fantasma[3] == 4) vContrari = 2;
     return vContrari;
 }
 
 //Funcio encarregada de comprovar si un fantasma esta en un tunel
 //- Comprova si a l'array direccions hi ha els dos sentits d'una direccio
 //- Retorna un boolea
-function tunel(direccions){
+function tunel(direccions) {
     var vTunel = false;
     if ((direccions[1] == 1) && (direccions[3] == 1)) vTunel = true;
     if ((direccions[2] == 1) && (direccions[4] == 1)) vTunel = true;
@@ -295,7 +293,7 @@ function tunel(direccions){
 //- Per a cada direccio, comprova si la seguent posicio es valida i, per tant, la direccio
 //  en la que se situa aquella posicio respecte l'element
 //- Retorna l'array direccions completat
-function comprovarDireccions(element, direccions){
+function comprovarDireccions(element, direccions) {
     var x = element[2];
     var y = element[1];
     //comprovem si podem anar a cada una de les direccions
@@ -314,7 +312,7 @@ function comprovarDireccions(element, direccions){
 //- Pintar el fantasma al tauler
 function moureFantasma(fantasma) {
     novaDireccioFantasma(fantasma);
-    
+
     if (fantasma[3] === 1) {
         tauler[fantasma[2]][fantasma[1]] = 1;
         fantasma[2] += 1;
@@ -337,6 +335,32 @@ function moureFantasma(fantasma) {
     }
 }
 
+
+
+//---------------------------------End Game---------------------------------
+
+//Funcio encarregada d'acabar el joc si se supera el temps limit
+//- Quan el temps passa un cert valor es marca guanyat com a true
+function comprovarTemps(tempsJoc) {
+    if (tempsJoc >= 10) {
+        clearTimeout(iterar);
+        guanyat = true;
+    }
+}
+
+//Funcio encarregada d'acabar el joc si es produeix una colisio
+//- Acaba el joc quan un jugador i un fantasma estan a la mateixa casella
+//- TODO: Acaba el joc quan un jugador i un fantasma es creuen
+function comprovarColisio(jugador, fantasma) {
+    if ((jugador[1] == fantasma[1]) && (jugador[2] == fantasma[2])) {
+        clearTimeout(iterar);
+        perdut = true;
+    }
+}
+
+function restart() {
+    start();
+}
 
 //BUGS: (coses completades)
 //- Hi ha vegades en que es coloca, inicialment, un fantasma o jugador sobre un mur
