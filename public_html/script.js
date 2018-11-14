@@ -83,16 +83,16 @@ function start() {
     dadesInicialsFantasma(f2);
     dadesInicialsFantasma(f3);
     pintar();
-    iterar = setInterval(iteracio, 130);
+    iterar = setInterval(iteracio, 50);
     //restart();
 }
 
 //Funcio encarregada de fer les iteracions
 function iteracio() {
-    //moureJugador(j1);
-    moureFantasma(f1);
-    moureFantasma(f2);
-    moureFantasma(f3);
+    moureElement(j1);
+    moureElement(f1);
+    moureElement(f2);
+    moureElement(f3);
     tempsJoc++;
     comprovarColisio(j1, f1);
     comprovarColisio(j1, f2);
@@ -137,7 +137,7 @@ function dadesInicialsJugador(jugador) {
     do {
         x = Math.floor((Math.random() * 29) + 0);
         y = Math.floor((Math.random() * 42) + 0);
-    } while (!comprobarPosicio(y, x))
+    } while (comprovarPosicio(y, x) != 1)
 
 
     //donem valors al jugador
@@ -161,7 +161,7 @@ function dadesInicialsFantasma(fantasma) {
     do {
         x = Math.floor((Math.random() * 29) + 0);
         y = Math.floor((Math.random() * 42) + 0);
-    } while (!comprobarPosicio(y, x))
+    } while (comprovarPosicio(y, x) != 1)
 
     //donem valors al fantasma
     fantasma[1] = x;
@@ -172,14 +172,20 @@ function dadesInicialsFantasma(fantasma) {
     tauler[y][x] = 3;
 }
 
-//Funcio encarregada de comprobar la posicio d'un element
-//- comproba que la posicio dun element sigui valida
-function comprobarPosicio(Y, X) {
-    var ok = false;
+//Funcio encarregada de comprovar la posicio d'un element
+//- comprova que la posicio dun element sigui valida
+function comprovarPosicio(Y, X) {
+    var pos = 0;
     if (tauler[Y][X] == 1) {
-        ok = true;
+        pos = 1;
     }
-    return ok;
+    if (tauler[Y][X] == 2) {
+        pos = 2;
+    }
+    if (tauler[Y][X] == 3) {
+        pos = 3;
+    }
+    return pos;
 }
 
 //Funcio encarregada d'assignar la direccio inicial d'un element
@@ -191,14 +197,14 @@ function direccioInicial(Y, X) {
     var aux;
 
     //comprovem si podem anar a cada una de les direccions
-    if (comprobarPosicio(Y + 1, X) == 1) direccions[1] = 1;
-    else direccions[1] = 0;
-    if (comprobarPosicio(Y, X + 1) == 1) direccions[2] = 1;
-    else direccions[2] = 0;
-    if (comprobarPosicio(Y - 1, X) == 1) direccions[3] = 1;
-    else direccions[3] = 0;
-    if (comprobarPosicio(Y, X - 1) == 1) direccions[4] = 1;
-    else direccions[4] = 0;
+    if (comprovarPosicio(Y + 1, X) == 0) direccions[1] = 0;
+    else direccions[1] = 1;
+    if (comprovarPosicio(Y, X + 1) == 0) direccions[2] = 0;
+    else direccions[2] = 1;
+    if (comprovarPosicio(Y - 1, X) == 0) direccions[3] = 0;
+    else direccions[3] = 1;
+    if (comprovarPosicio(Y, X - 1) == 0) direccions[4] = 0;
+    else direccions[4] = 1;
 
     //Assignem una direccio aleatoria de les disponibles, a una var auxiliar
     do {
@@ -217,28 +223,28 @@ function direccioInicial(Y, X) {
 
 //---------------------------------Moviment Elements---------------------------------
 
-//Funcio encarregada d'assignar una nova direccio a un fantasma
-//- Comprova les direccions a les que pot anar un fantasma
+//Funcio encarregada d'assignar una nova direccio a un element
+//- Comprova les direccions a les que pot anar un element
 //- En cas d'estar a una cruilla tria una direccio que no sigui l'actual a la inversa
 //- En el cas d'una paret, que trii qualsevol
-function novaDireccioFantasma(fantasma) {
+function novaDireccioElement(element) {
     var trobada = false;
     var novaDir;
     var aux;
     var numDir = 0;
 
-    comprovarDireccions(fantasma, direccions);
+    comprovarDireccions(element, direccions);
 
     //calculem el numero de direccions possibles
     for (var i = 1; i < 5; i++) {
-        if (direccions[i] === 1) numDir++;
+        if (direccions[i] == 1 || direccions[i] == 2) numDir++;
     }
 
     //en el cas de que sigui una cruilla, que no torni enrere
     if (numDir > 2) {
         do {
             aux = Math.floor((Math.random() * 4) + 1);
-            if ((direccions[aux] == 1) && (fantasma[3] != contrari(fantasma))) {
+            if ((direccions[aux] !=0) && (element[3] != contrari(element))) {
                 trobada = true;
                 novaDir = aux;
             }
@@ -249,11 +255,11 @@ function novaDireccioFantasma(fantasma) {
     if (numDir <= 2) {
         do {
             aux = Math.floor((Math.random() * 4) + 1);
-            if (direccions[aux] == 1) {
+            if (direccions[aux] !=0) {
                 //si estem en un tunel, nomes poden seguir recte
                 if (tunel(direccions)) {
                     trobada = true;
-                    novaDir = fantasma[3];
+                    novaDir = element[3];
                 }
                 //si ens trobem una paret, qualsevol de les dues direccions es bona
                 else {
@@ -265,21 +271,21 @@ function novaDireccioFantasma(fantasma) {
     }
 
     //assignem la nova direccio al fantasma
-    fantasma[3] = novaDir;
+    element[3] = novaDir;
 }
 
-//Funcio encarregada de comprovar si un fantasma va enrere
-//- Retorna la direccio contraria a la que va el fantasma
-function contrari(fantasma) {
+//Funcio encarregada de comprovar si un element va enrere
+//- Retorna la direccio contraria a la que va l'element
+function contrari(element) {
     var vContrari;
-    if (fantasma[3] == 1) vContrari = 3;
-    if (fantasma[3] == 2) vContrari = 4;
-    if (fantasma[3] == 3) vContrari = 1;
-    if (fantasma[3] == 4) vContrari = 2;
+    if (element[3] == 1) vContrari = 3;
+    if (element[3] == 2) vContrari = 4;
+    if (element[3] == 3) vContrari = 1;
+    if (element[3] == 4) vContrari = 2;
     return vContrari;
 }
 
-//Funcio encarregada de comprovar si un fantasma esta en un tunel
+//Funcio encarregada de comprovar si un element esta en un tunel
 //- Comprova si a l'array direccions hi ha els dos sentits d'una direccio
 //- Retorna un boolea
 function tunel(direccions) {
@@ -294,44 +300,55 @@ function tunel(direccions) {
 //  en la que se situa aquella posicio respecte l'element
 //- Retorna l'array direccions completat
 function comprovarDireccions(element, direccions) {
-    var x = element[2];
-    var y = element[1];
+    var X = element[2];
+    var Y = element[1];
+
     //comprovem si podem anar a cada una de les direccions
-    if (comprobarPosicio(x + 1, y) == 1) direccions[1] = 1;
-    else direccions[1] = 0;
-    if (comprobarPosicio(x, y + 1) == 1) direccions[2] = 1;
-    else direccions[2] = 0;
-    if (comprobarPosicio(x - 1, y) == 1) direccions[3] = 1;
-    else direccions[3] = 0;
-    if (comprobarPosicio(x, y - 1) == 1) direccions[4] = 1;
-    else direccions[4] = 0;
+    if (comprovarPosicio(Y + 1, X) == 0) direccions[1] = 0;
+    else direccions[1] = 1;
+    if (comprovarPosicio(Y, X + 1) == 0) direccions[2] = 0;
+    else direccions[2] = 1;
+    if (comprovarPosicio(Y - 1, X) == 0) direccions[3] = 0;
+    else direccions[3] = 1;
+    if (comprovarPosicio(Y, X - 1) == 0) direccions[4] = 0;
+    else direccions[4] = 1;
 }
 
-//Funcio encarregada de moure el fantasma
+//Funcio encarregada de moure l'element
 //- Aconseguir una nova direccio
 //- Pintar el fantasma al tauler
-function moureFantasma(fantasma) {
-    novaDireccioFantasma(fantasma);
+function moureElement(element) {
+    novaDireccioElement(element);
 
-    if (fantasma[3] === 1) {
-        tauler[fantasma[2]][fantasma[1]] = 1;
-        fantasma[2] += 1;
-        tauler[fantasma[2]][fantasma[1]] = 3;
+    var posAntiga = tauler[element[2]][element[1]];
+
+    if (element[3] == 1) {
+        comprovarColisio();
+        tauler[element[2]][element[1]] = 1;
+        element[2] += 1;
+        if(posAntiga == 2) tauler[element[2]][element[1]] = 2;
+        else tauler[element[2]][element[1]] = 3;
     }
-    if (fantasma[3] === 2) {
-        tauler[fantasma[2]][fantasma[1]] = 1;
-        fantasma[1] += 1;
-        tauler[fantasma[2]][fantasma[1]] = 3;
+    if (element[3] == 2) {
+        tauler[element[2]][element[1]] = 1;
+        element[1] += 1;
+        tauler[element[2]][element[1]] = 3;
+        if(posAntiga == 2) tauler[element[2]][element[1]] = 2;
+        else tauler[element[2]][element[1]] = 3;
     }
-    if (fantasma[3] === 3) {
-        tauler[fantasma[2]][fantasma[1]] = 1;
-        fantasma[2] += -1;
-        tauler[fantasma[2]][fantasma[1]] = 3;
+    if (element[3] == 3) {
+        tauler[element[2]][element[1]] = 1;
+        element[2] += -1;
+        tauler[element[2]][element[1]] = 3;
+        if(posAntiga == 2) tauler[element[2]][element[1]] = 2;
+        else tauler[element[2]][element[1]] = 3;
     }
-    if (fantasma[3] === 4) {
-        tauler[fantasma[2]][fantasma[1]] = 1;
-        fantasma[1] += -1;
-        tauler[fantasma[2]][fantasma[1]] = 3;
+    if (element[3] == 4) {
+        tauler[element[2]][element[1]] = 1;
+        element[1] += -1;
+        tauler[element[2]][element[1]] = 3;
+        if(posAntiga == 2) tauler[element[2]][element[1]] = 2;
+        else tauler[element[2]][element[1]] = 3;
     }
 }
 
@@ -342,7 +359,7 @@ function moureFantasma(fantasma) {
 //Funcio encarregada d'acabar el joc si se supera el temps limit
 //- Quan el temps passa un cert valor es marca guanyat com a true
 function comprovarTemps(tempsJoc) {
-    if (tempsJoc >= 10) {
+    if (tempsJoc >= 1000) {
         clearTimeout(iterar);
         guanyat = true;
     }
@@ -352,10 +369,26 @@ function comprovarTemps(tempsJoc) {
 //- Acaba el joc quan un jugador i un fantasma estan a la mateixa casella
 //- TODO: Acaba el joc quan un jugador i un fantasma es creuen
 function comprovarColisio(jugador, fantasma) {
+
     if ((jugador[1] == fantasma[1]) && (jugador[2] == fantasma[2])) {
         clearTimeout(iterar);
         perdut = true;
     }
+
+//    if(((jugador[1] + 1) == fantasma[1]) && (jugador[2] == fantasma[2]))
+
+//    if((tauler[jugador[2]][jugador[1]] == tauler[tOld[1][0]][tOld[1][1]]) && (tauler[fantasma[2]][fantasma[1]] == tauler[tOld[0][0]][tOld[0][1]])){
+//        clearTimeout(iterar);
+//        perdut = true;
+//    }
+//    if((tauler[jugador[2]][jugador[1]] == tauler[tOld[2][0]][tOld[2][1]]) && (tauler[fantasma[2]][fantasma[1]] == tauler[tOld[0][0]][tOld[0][1]])){
+//        clearTimeout(iterar);
+//        perdut = true;
+//    }
+//    if((tauler[jugador[2]][jugador[1]] == tauler[tOld[3][0]][tOld[3][1]]) && (tauler[fantasma[2]][fantasma[1]] == tauler[tOld[0][0]][tOld[0][1]])){
+//        clearTimeout(iterar);
+//        perdut = true;
+//    }
 }
 
 function restart() {
@@ -364,13 +397,27 @@ function restart() {
 
 //BUGS: (coses completades)
 //- Hi ha vegades en que es coloca, inicialment, un fantasma o jugador sobre un mur
+//- Si un dos fantasmes en linia xoquen contra una paret (com abaix) es penja.
 
-
+//XXXX XX
+//XXXX XX
+//   33XX
+//XXXX XX
+//XXXX XX
 
 //punt4
 //quan el jugador estigui en la mateixa casella que un fantasma DONE
 //Pero: si la diferencia es parella, no estaran mai a la mateixa casella
 //Moviment propi: detectar tecles: estar al github de la assignatura, no esta acabada
-//
+
+//pODEM AGAFAR TANT CODE COM KEY
+//<body id="all">
+//console.log("event " + e.type)
+//console.log(e);
+//if(e.code == "ArrowLeft"){
+//    bla bla bla
+//};
+//        var e
+ //
 //punt5
 //canvas esta al github de lassignatura
