@@ -21,6 +21,9 @@ var colisio = false;
 var tempsJoc = 0;
 var direccions = new Array();
 
+//Variable introduida per teclat
+var keyPress;
+
 //variable tauler
 var tauler = new Array();
 tauler = [
@@ -78,7 +81,7 @@ tauler = [
 //- Que el joc comensi
 //- Bucle de temps
 //- Que el joc acabi
-//- TODO: Restart?
+// TODO: Restart?
 function start() {
     dadesInicialsJugador(j1);
     dadesInicialsFantasma(f1);
@@ -90,10 +93,14 @@ function start() {
 }
 
 //Funcio encarregada de fer les iteracions
-
+//- Recull la direccio per teclat
+//- Mou el jugador
+//- Mou els tres fantasmes
+//- Comprova si s'ha acabat el temps
 function iteracio() {
-    //if(acabat) clearInterval(iterar);
-    //moureJugador(j1);
+    var element = document.getElementById("all");
+	document.onkeydown = dirKeyPress;
+    moureJugador(j1);
     moureFantasma(f1);
     moureFantasma(f2);
     moureFantasma(f3);
@@ -126,6 +133,7 @@ function pintar() {
     document.getElementById("tauler").innerHTML = laberint;
     document.getElementById("puntuacio").innerHTML = (Math.floor(tempsJoc));
 }
+
 
 //---------------------------------Dades Inicials---------------------------------
 
@@ -216,6 +224,7 @@ function direccioInicial(Y, X) {
     //retornem la direccio inicial
     return dirIni;
 }
+
 
 //---------------------------------Moviment Elements---------------------------------
 
@@ -318,23 +327,34 @@ function comprovarDireccions(element, direccions){
 function moureFantasma(fantasma) {
     novaDireccioFantasma(fantasma);
 
-    if (fantasma[3] === 1) {
+    if (fantasma[3] == 1) {
         tauler[fantasma[2]][fantasma[1]] = 1;
+        //guardem les posicions antigues per comprovar colisions
+        fantasma[5] = fantasma[1];
+        fantasma[6] = fantasma[2];
+        //movem el fantasma
         fantasma[2] += 1;
+        //modifiquem el tauler
         tauler[fantasma[2]][fantasma[1]] = 3;
     }
-    if (fantasma[3] === 2) {
+    if (fantasma[3] == 2) {
         tauler[fantasma[2]][fantasma[1]] = 1;
+        fantasma[5] = fantasma[1];
+        fantasma[6] = fantasma[2];
         fantasma[1] += 1;
         tauler[fantasma[2]][fantasma[1]] = 3;
     }
-    if (fantasma[3] === 3) {
+    if (fantasma[3] == 3) {
         tauler[fantasma[2]][fantasma[1]] = 1;
+        fantasma[5] = fantasma[1];
+        fantasma[6] = fantasma[2];
         fantasma[2] += -1;
         tauler[fantasma[2]][fantasma[1]] = 3;
     }
-    if (fantasma[3] === 4) {
+    if (fantasma[3] == 4) {
         tauler[fantasma[2]][fantasma[1]] = 1;
+        fantasma[5] = fantasma[1];
+        fantasma[6] = fantasma[2];
         fantasma[1] += -1;
         tauler[fantasma[2]][fantasma[1]] = 3;
     }
@@ -346,35 +366,67 @@ function moureFantasma(fantasma) {
 function moureJugador(jugador) {
     novaDireccioJugador(jugador);
 
-    if (fantasma[3] === 1) {
-        tauler[fantasma[2]][fantasma[1]] = 1;
-        fantasma[2] += 1;
-        tauler[fantasma[2]][fantasma[1]] = 3;
+    if (jugador[3] == 1 && tauler[jugador[2] + 1][jugador[1]] != 0) {
+        tauler[jugador[2]][jugador[1]] = 1;
+        //guardem les posicions antigues per comprovar colisions
+        jugador[5] = jugador[1];
+        jugador[6] = jugador[2];
+        //movem el jugador
+        jugador[2] += 1;
+        //modifiquem el tauler
+        tauler[jugador[2]][jugador[1]] = 2;
     }
-    if (fantasma[3] === 2) {
-        tauler[fantasma[2]][fantasma[1]] = 1;
-        fantasma[1] += 1;
-        tauler[fantasma[2]][fantasma[1]] = 3;
+    if (jugador[3] == 2 && tauler[jugador[2]][jugador[1] + 1] != 0) {
+        tauler[jugador[2]][jugador[1]] = 1;
+        jugador[5] = jugador[1];
+        jugador[6] = jugador[2];
+        jugador[1] += 1;
+        tauler[jugador[2]][jugador[1]] = 2;
     }
-    if (fantasma[3] === 3) {
-        tauler[fantasma[2]][fantasma[1]] = 1;
-        fantasma[2] += -1;
-        tauler[fantasma[2]][fantasma[1]] = 3;
+    if (jugador[3] == 3 && tauler[jugador[2] - 1][jugador[1]] != 0) {
+        tauler[jugador[2]][jugador[1]] = 1;
+        jugador[5] = jugador[1];
+        jugador[6] = jugador[2];
+        jugador[2] += -1;
+        tauler[jugador[2]][jugador[1]] = 2;
     }
-    if (fantasma[3] === 4) {
-        tauler[fantasma[2]][fantasma[1]] = 1;
-        fantasma[1] += -1;
-        tauler[fantasma[2]][fantasma[1]] = 3;
+    if (jugador[3] == 4 && tauler[jugador[2]][jugador[1] - 1] != 0) {
+        tauler[jugador[2]][jugador[1]] = 1;
+        jugador[5] = jugador[1];
+        jugador[6] = jugador[2];
+        jugador[1] += -1;
+        tauler[jugador[2]][jugador[1]] = 2;
     }
 }
 
 //Funcio encarregada de moure el jugador
-//- Aconseguir una nova direccio introduida per teclat
-//- Pintar el jugador al tauler
+//- Comprovar que la direccio introduida sigui valida i assignarla al jugador
 function novaDireccioJugador(jugador){
+    comprovarDireccions(jugador, direccions);
 
+    if(direccions[keyPress] == 1){
+       jugador[3] = keyPress;
+    }
+}
 
-
+//Funcio encarregada de llegir la direccio introduida per teclat
+//- Assigna la direccio introduida a una variable
+//- Pintar el jugador al tauler
+function dirKeyPress(e){
+	var keyDown = document.all ? e.which : e.key;
+    //La direccio a dalt i a baix estan invertides!
+    if (keyDown == "ArrowDown"){
+		keyPress = 1;
+	}
+	if (keyDown == "ArrowRight"){
+		keyPress = 2;
+	}
+    if (keyDown == "ArrowUp"){
+		keyPress = 3;
+	}
+	if (keyDown == "ArrowLeft"){
+		keyPress = 4;
+	}
 }
 
 
@@ -394,7 +446,7 @@ function comprovarTemps(tempsJoc) {
 //- TODO: Acaba el joc quan un jugador i un fantasma es creuen
 function comprovarColisio(fantasma) {
     var perdut = false;
-
+    //Fantasma i jugador en una diferencia imparella de posicions de distancia
     if (tauler[fantasma[2]][fantasma[1] + 1] == 2) {
         clearTimeout(iterar);
         perdut = true;
@@ -411,6 +463,13 @@ function comprovarColisio(fantasma) {
         clearTimeout(iterar);
         perdut = true;
     }
+
+    //Fantasma i jugador en una diferencia parella de posicions de distancia
+    if(j1[1] == fantasma[1] && j1[2] == fantasma[2]){
+        clearTimeout(iterar);
+        perdut = true;
+    }
+
     if(perdut){
         document.getElementById("resultat").innerHTML = "Game Over";
         console.log("Perdut");
@@ -425,8 +484,8 @@ function restart() {
 }
 
 //BUGS: (coses completades)
-//- Hi ha vegades en que es coloca, inicialment, un fantasma o jugador sobre un mur
-//- Si un dos fantasmes en linia xoquen contra una paret (com abaix) es penja.
+//TODO Hi ha vegades en que es coloca, inicialment, un fantasma o jugador sobre un mur
+//TODO Si dos fantasmes en linia xoquen contra una paret (com abaix) es penja.
 
 //XXXX XX
 //XXXX XX
@@ -434,19 +493,9 @@ function restart() {
 //XXXX XX
 //XXXX XX
 
-//punt4
-//quan el jugador estigui en la mateixa casella que un fantasma DONE
-//Pero: si la diferencia es parella, no estaran mai a la mateixa casella
-//Moviment propi: detectar tecles: estar al github de la assignatura, no esta acabada
+// TODO Quan hi ha una colisio a la mateixa casella, el fantasma queda sobre el PacMan
+// TODO Quan hi ha un encreuament, no es creuen mai, pero s'acaba la partida
 
-//pODEM AGAFAR TANT CODE COM KEY
-//<body id="all">
-//console.log("event " + e.type)
-//console.log(e);
-//if(e.code == "ArrowLeft"){
-//    bla bla bla
-//};
-//        var e
- //
+
 //punt5
 //canvas esta al github de lassignatura
