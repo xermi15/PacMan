@@ -88,7 +88,7 @@ function start() {
     dadesInicialsFantasma(f2);
     dadesInicialsFantasma(f3);
     pintar();
-    iterar = setInterval(iteracio, 130);
+    iterar = setInterval(iteracio, 200);
     //restart();
 }
 
@@ -439,7 +439,7 @@ function dirKeyPress(e){
 //Funcio encarregada d'acabar el joc si se supera el temps limit
 //- Quan el temps passa un cert valor es marca guanyat com a true
 function comprovarTemps(tempsJoc) {
-    if (tempsJoc >= 1000) {
+    if (tempsJoc >= 600) {
         clearTimeout(iterar);
         document.getElementById("resultat").innerHTML = "You win!";
     }
