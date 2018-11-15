@@ -17,3 +17,55 @@ body {
   color: red;
 }
 
+#score{
+    background-color: #ffee00;
+    width: 9rem;
+    height: 1rem;
+    float: right;
+    padding: 0.5rem;
+
+    color: black;
+    text-align: center;
+    font-size: 1.6rem;
+    line-height: 70%;
+
+    margin-bottom: 0.5;
+    margin-right: 0;
+    margin-top: 0;
+}
+
+#pacmanTitol{
+    width: 8rem;
+    height: 3rem;
+    text-align: left;
+    font-size: 4rem;
+    line-height: 70%;
+}
+
+#autor{
+    width: 8rem;
+    height: 1rem;
+    text-align: left;
+}
+
+#versio{
+    width: 6rem;
+    height: 1rem;
+    text-align: left;
+}
+
+.container{
+    width: 551px;
+}
+
+.Row
+{
+    display: table;
+    width: 100%; /*Optional*/
+    table-layout: fixed; /*Optional*/
+}
+.Column
+{
+    display:inline-table;
+}
+

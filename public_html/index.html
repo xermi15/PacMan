@@ -9,14 +9,27 @@
         <script type="text/javascript" src="script.js"></script>
     </head>
     <body id="all">
-       
-        <h1>PACMAN v0.4.0</h1>
-        <div>SCORE = <span id="puntuacio"></span></div><br>
-        <div id="tauler"></div>
-        <p><br>by Xavi Franch<br></p>
-        <div id="resultat"></div>
-        <button id="buttonRestart">Restart</button>
 
+
+        <div class="container">
+            <div class="Row">
+                <div class="Column" id="pacmanTitol">PACMAN</div>
+                <div class="Column" id="versio">v0.5.0</div>
+                <div class="Column" id="autor">by Xavi Franch</div>
+                <div class="Column" id="score">SCORE = <span id="puntuacio"></span> <br> <span id="resultat"></span></div>
+            </div>
+
+            <img src="images/paret.png" id="paret" style="display: none;">
+            <img src="images/cami.png" id="cami" style="display: none;">
+            <img src="images/fantasma.png" id="fantasma" style="display: none;">
+            <img src="images/pacman.png" id="pacman" style="display: none;">
+            <canvas id="tauler" width="650" height="861"> </canvas>
+
+
+            <div id="resultat"></div>
+<!--            <button id="buttonRestart" onclick='restart()'>Restart</button>-->
+
+       </div>
         <script>start();</script>
     </body>
 </html>

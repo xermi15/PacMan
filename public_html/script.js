@@ -116,21 +116,23 @@ function iteracio() {
 //- Colocar-ho en una taula HTML (Punt 5)
 //- Mostrar parets en comptes de lletres (Punt 5)
 function pintar() {
-    var laberint = "";
+    var canvas = document.getElementById("tauler");
+    var img;
     for (var i = 0; i < 43; i++) {
         for (var j = 0; j < 29; j++) {
             if (tauler[i][j] == 1) {
-                laberint += "&nbsp;";
+                img = document.getElementById("cami");
             } else if (tauler[i][j] == 2) {
-                laberint += "<span class='jugador'>C</span>";
+                img = document.getElementById("pacman");
             } else if (tauler[i][j] == 3) {
-                laberint += "<span class='fantasma'>M</span>";
-            } else laberint += "X";
+                img = document.getElementById("fantasma");
+            } else img = document.getElementById("paret");
+
+            var ctx = canvas.getContext("2d").drawImage(img, j*19, i*19, 19, 19);
         }
-        laberint += "<br>";
     }
 
-    document.getElementById("tauler").innerHTML = laberint;
+
     document.getElementById("puntuacio").innerHTML = (Math.floor(tempsJoc));
 }
 
@@ -401,6 +403,8 @@ function moureJugador(jugador) {
 
 //Funcio encarregada de moure el jugador
 //- Comprovar que la direccio introduida sigui valida i assignarla al jugador
+//- En el cas de que no sigui valida, seguira en la mateixa direccio o es quedara
+//  quiet contra la paret.
 function novaDireccioJugador(jugador){
     comprovarDireccions(jugador, direccions);
 
@@ -437,7 +441,7 @@ function dirKeyPress(e){
 function comprovarTemps(tempsJoc) {
     if (tempsJoc >= 1000) {
         clearTimeout(iterar);
-        guanyat = true;
+        document.getElementById("resultat").innerHTML = "You win!";
     }
 }
 
@@ -471,17 +475,17 @@ function comprovarColisio(fantasma) {
     }
 
     if(perdut){
-        document.getElementById("resultat").innerHTML = "Game Over";
+        document.getElementById("resultat").innerHTML = "Game Over!";
         console.log("Perdut");
     }
 }
 
 
 
-
-function restart() {
-    start();
-}
+//no funciona
+//function restart() {
+//    location.reload();
+//}
 
 //BUGS: (coses completades)
 //TODO Hi ha vegades en que es coloca, inicialment, un fantasma o jugador sobre un mur
@@ -496,6 +500,3 @@ function restart() {
 // TODO Quan hi ha una colisio a la mateixa casella, el fantasma queda sobre el PacMan
 // TODO Quan hi ha un encreuament, no es creuen mai, pero s'acaba la partida
 
-
-//punt5
-//canvas esta al github de lassignatura
